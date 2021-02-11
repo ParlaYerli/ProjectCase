@@ -39,6 +39,16 @@ namespace WebAPI.Test
             Assert.Equal(3, returnItem.ToList().Count);
         }
 
+        [Theory]
+        [InlineData(0)]
+        public void GetItem_IdInValid_ReturnNotFound(int itemId)
+        {
+            Item item = null;
+            _mockRepo.Setup(x => x.GetById(itemId)).Returns(item);
+            var result = _controller.GetItemById(itemId);
+            Assert.IsType<NotFoundResult>(result);
+        }
+
     }
 }
 
