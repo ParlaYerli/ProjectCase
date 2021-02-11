@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Business.Abstract;
 using Business.Concrete;
-using Common.Settings;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
 using DataAccess.Concrete.Context;

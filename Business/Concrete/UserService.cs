@@ -1,5 +1,4 @@
 ﻿using Business.Abstract;
-using Common.Settings;
 using DataAccess.Abstract;
 using DataAccess.Concrete.Context;
 using Entities.Entity;
