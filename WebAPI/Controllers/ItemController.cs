@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
             var item = _service.GetById(itemId);
             if (item==null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item bulunamadı" });
             }
             return Ok(item);
         }
@@ -57,10 +57,10 @@ namespace WebAPI.Controllers
             var product =  _service.GetById(itemId);
             if (product == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item bulunamadı" });
             }
              _service.Delete(product);
-            return Ok();
+            return Ok(new { message = "Item başarıyla silindi" });
         }
 
         [HttpPut("{id}")]
@@ -68,10 +68,10 @@ namespace WebAPI.Controllers
         {
             if (id != item.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item bilgisi hatalı" });
             }
             _service.Update(item);
-            return Ok();
+            return Ok(new { message = "Item başarıyla güncellendi" });
         }
     }
 }
