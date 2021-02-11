@@ -63,7 +63,7 @@ namespace WebAPI.Test
         }
 
         [Fact]
-        public void Add_ActionExecutes_ReturnCreatedAtAction()
+        public void Add_ActionExecutes_ReturnAction()
         {
             Item item = items.First();
             _mock.Setup(x => x.Add(item));
@@ -73,6 +73,49 @@ namespace WebAPI.Test
             _mock.Verify(x => x.Add(item), Times.Once);
             Assert.IsType<OkObjectResult>(result);   
         }
+
+        [Theory]
+        [InlineData(0)]
+        public void Delete_IdInValid_ReturnNotFound(int itemId)
+        {
+            Item item = null;
+            _mock.Setup(x => x.GetById(itemId)).Returns(item);
+            var result = _controller.Delete(itemId);
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        public void Delete_ActionExecutes_ReturnOk(int itemId)
+        {
+            Item item = items.First(x => x.Id == itemId);
+            _mock.Setup(x => x.GetById(itemId)).Returns(item);
+            _mock.Setup(x => x.Delete(item));
+            var result = _controller.Delete(itemId);
+            _mock.Verify(x => x.Delete(item), Times.Once);
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        public void Update_IdIsNotEqualItem_ReturnBadRequest(int itemId)
+        {
+            Item item = items.First(x => x.Id == itemId);
+            var result = _controller.Update(2, item);
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        public void Update_ActionExecute_ReturnOk(int itemId)
+        {
+            Item item = items.First(x => x.Id == itemId);
+            _mock.Setup(x => x.Update(item));
+            var result = _controller.Update(itemId, item);
+            _mock.Verify(x => x.Update(item), Times.Once);
+            Assert.IsType<OkResult>(result);
+        }
+
 
     }
 }

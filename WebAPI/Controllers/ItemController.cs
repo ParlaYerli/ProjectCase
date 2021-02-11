@@ -63,10 +63,14 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-        [HttpPut("update")]
-        public IActionResult Update(Item product)
+        [HttpPut("{id}")]
+        public IActionResult Update(int id,Item item)
         {
-            _service.Update(product);
+            if (id != item.Id)
+            {
+                return BadRequest();
+            }
+            _service.Update(item);
             return Ok();
         }
     }
