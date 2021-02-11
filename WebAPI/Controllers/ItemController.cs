@@ -23,9 +23,9 @@ namespace WebAPI.Controllers
             _service = service;
         }
         [HttpGet("getall")]
-        public List<Item> GetList()
+        public IActionResult GetList()
         {
-            return _service.GetList();
+            return Ok(_service.GetList());
         }
 
         [HttpGet("getbyid/{itemId}")]

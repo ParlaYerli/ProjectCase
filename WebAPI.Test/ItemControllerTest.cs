@@ -1,10 +1,13 @@
 ﻿using Business.Abstract;
 using Entities.Entity;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WebAPI.Controllers;
+using Xunit;
 
 namespace WebAPI.Test
 {
@@ -25,6 +28,15 @@ namespace WebAPI.Test
                 new Item { Code = "0002", Name = "Keyboard", Price = 230 },
                 new Item { Code = "0003", Name = "Mouse", Price = 150 }
             };
+        }
+        [Fact]
+        public void GetList_ActionExecutes_ReturnOkResultWithUser()
+        {
+            _mockRepo.Setup(x => x.GetList()).Returns(items);
+            var result = _controller.GetList();
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnItem = Assert.IsAssignableFrom<List<Item>>(okResult.Value);
+            Assert.Equal(3, returnItem.ToList().Count);
         }
 
     }
