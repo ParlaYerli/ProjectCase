@@ -13,26 +13,26 @@ namespace WebAPI.Test
 {
     public class ItemControllerTest
     {
-        private readonly Mock<IItemService> _mockRepo;
+        private readonly Mock<IItemService> _mock;
         private readonly ItemController _controller;
 
         private List<Item> items;
         public ItemControllerTest()
         {
-            _mockRepo = new Mock<IItemService>();
-            _controller = new ItemController(_mockRepo.Object);
+            _mock = new Mock<IItemService>();
+            _controller = new ItemController(_mock.Object);
 
             items = new List<Item>()
             {
-                new Item { Code = "0001", Name = "Notebook", Price = 6300 },
-                new Item { Code = "0002", Name = "Keyboard", Price = 230 },
-                new Item { Code = "0003", Name = "Mouse", Price = 150 }
+                new Item {Id=1, Code = "0001", Name = "Notebook", Price = 6300 },
+                new Item {Id=2,Code = "0002", Name = "Keyboard", Price = 230 },
+                new Item {Id=3, Code = "0003", Name = "Mouse", Price = 150 }
             };
         }
         [Fact]
         public void GetList_ActionExecutes_ReturnOkResultWithUser()
         {
-            _mockRepo.Setup(x => x.GetList()).Returns(items);
+            _mock.Setup(x => x.GetList()).Returns(items);
             var result = _controller.GetList();
             var okResult = Assert.IsType<OkObjectResult>(result);
             var returnItem = Assert.IsAssignableFrom<List<Item>>(okResult.Value);
@@ -44,9 +44,34 @@ namespace WebAPI.Test
         public void GetItem_IdInValid_ReturnNotFound(int itemId)
         {
             Item item = null;
-            _mockRepo.Setup(x => x.GetById(itemId)).Returns(item);
+            _mock.Setup(x => x.GetById(itemId)).Returns(item);
             var result = _controller.GetItemById(itemId);
             Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        public void GetItemById_IdValid_ReturnOkResult(int itemId)
+        {
+            Item item = items.First(x => x.Id == itemId);
+            _mock.Setup(x => x.GetById(itemId)).Returns(item);
+            var result = _controller.GetItemById(itemId);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnItem = Assert.IsAssignableFrom<Item>(okResult.Value);
+            Assert.Equal(itemId, returnItem.Id);
+            Assert.Equal(item.Name, returnItem.Name);
+        }
+
+        [Fact]
+        public void Add_ActionExecutes_ReturnCreatedAtAction()
+        {
+            Item item = items.First();
+            _mock.Setup(x => x.Add(item));
+            var result = _controller.Add(item);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnItem = Assert.IsAssignableFrom<Item>(okResult.Value);
+            _mock.Verify(x => x.Add(item), Times.Once);
+            Assert.IsType<OkObjectResult>(result);   
         }
 
     }
